@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}我的会员 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card" style="max-width:480px">
+    <h1 class="form-card-title">我的会员</h1>
+
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="form-error-box" style="background:var(--success-soft);border-color:rgba(52,211,153,.35);color:var(--success)">
+          <i class="bi bi-check-circle"></i> {{ msg }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- 当前状态 -->
+    {% if membership and membership.is_active %}
+      <div style="position:relative;border-radius:var(--r-md);padding:1.25rem 1.5rem;margin-bottom:1.5rem;
+                  background:linear-gradient(135deg, rgba(52,211,153,.14), rgba(99,102,241,.1));
+                  border:1px solid rgba(52,211,153,.3);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem">
+          <span style="display:inline-flex;width:26px;height:26px;border-radius:50%;
+                       background:linear-gradient(135deg,#34d399,#10b981);
+                       align-items:center;justify-content:center;color:#fff;font-size:.85rem;
+                       box-shadow:0 0 14px rgba(52,211,153,.5)">
+            <i class="bi bi-check-lg"></i>
+          </span>
+          <span style="font-weight:600;font-size:1rem;color:#fff">会员有效</span>
+        </div>
+        <div style="color:var(--text-2);font-size:.88rem;line-height:1.8">
+          <div>到期时间：<strong style="color:#fff">{{ membership.expires_at|date:"Y年m月d日 H:i" }}</strong></div>
+          <div>剩余天数：<strong style="color:var(--accent-2)">{{ membership.days_remaining }} 天</strong></div>
+        </div>
+      </div>
+    {% else %}
+      <div style="border-radius:var(--r-md);padding:1.25rem 1.5rem;margin-bottom:1.5rem;
+                  background:var(--surface-2);border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
+          <span style="font-size:1.3rem">🔒</span>
+          <span style="font-weight:600;font-size:1rem;color:#fff">未开通 / 已过期</span>
+        </div>
+        <div style="color:var(--text-3);font-size:.88rem">购买会员或兑换邀请码即可解锁全部内容。</div>
+      </div>
+    {% endif %}
+
+    <!-- 付费续期入口 -->
+    <a href="{% url 'accounts:pricing' %}" class="btn btn-primary btn-full" style="margin-bottom:1.5rem">
+      <i class="bi bi-lightning-charge-fill"></i> 开通 / 续费会员
+    </a>
+
+    <!-- 兑换邀请码 -->
+    <h2 style="font-size:.85rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem">
+      或：邀请码兑换
+    </h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="text" name="code"
+               class="form-input {% if form.code.errors %}is-error{% endif %}"
+               placeholder="输入邀请码（不区分大小写）"
+               autocomplete="off">
+        {% for error in form.code.errors %}
+          <div class="form-error">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-outline btn-full">兑换</button>
+    </form>
+
+    <hr class="form-divider">
+    <p class="form-footer" style="text-align:center">
+      <a href="{% url 'posts:list' %}"><i class="bi bi-arrow-left"></i> 返回首页</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

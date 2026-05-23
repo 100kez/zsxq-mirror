@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}前往支付 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card" style="max-width:520px;text-align:center">
+
+    <div style="display:inline-flex;align-items:center;justify-content:center;
+                width:60px;height:60px;border-radius:16px;margin-bottom:1rem;
+                background:linear-gradient(135deg,{% if method == 'wechat' %}#07c160 0%,#10b981{% else %}#1677ff 0%,#0066ff{% endif %} 100%);
+                box-shadow:0 0 32px {% if method == 'wechat' %}rgba(7,193,96,.4){% else %}rgba(22,119,255,.4){% endif %}, inset 0 0 0 2px rgba(255,255,255,.18);
+                color:#fff;font-size:1.6rem">
+      <i class="bi bi-{% if method == 'wechat' %}wechat{% else %}alipay{% endif %}"></i>
+    </div>
+
+    <h1 style="font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:.5rem">
+      {% if method == 'wechat' %}微信支付{% else %}支付宝{% endif %} · {{ plan_title }}
+    </h1>
+    <p style="color:var(--text-2);font-size:.92rem;margin:.4rem 0 1.5rem">
+      金额 <strong style="color:var(--accent-2);font-size:1.05rem">¥{{ order.amount }}</strong>
+    </p>
+
+    <a id="payLink" href="{{ order.pay_url }}" target="_blank" rel="noopener"
+       class="btn btn-primary btn-full" style="margin-bottom:.75rem">
+      <i class="bi bi-arrow-up-right-square"></i> 在新窗口打开收银台
+    </a>
+
+    <div id="statusBox" style="margin-top:1.25rem;padding:1rem 1.25rem;border-radius:var(--r-md);
+                                background:var(--surface-2);border:1px solid var(--border);
+                                font-size:.88rem;color:var(--text-2);line-height:1.7">
+      <i class="bi bi-hourglass-split" style="color:var(--accent)"></i>
+      <span id="statusText">等待支付完成，本页面将自动跳转</span>
+      <div style="margin-top:.5rem;color:var(--text-3);font-size:.78rem">
+        订单号 <span style="font-family:monospace">{{ order.mch_order_no }}</span>
+      </div>
+    </div>
+
+    <hr class="form-divider">
+    <p class="form-footer">
+      已支付但页面没自动跳？
+      <a href="{% url 'accounts:membership' %}">手动查看会员状态</a>
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const MCH = "{{ order.mch_order_no }}";
+  const STATUS_URL = "{% url 'accounts:pay_status' %}?order=" + encodeURIComponent(MCH);
+  const MEMBERSHIP_URL = "{% url 'accounts:membership' %}";
+  const PAY_LINK = document.getElementById('payLink');
+  const TXT = document.getElementById('statusText');
+  let ticks = 0;
+
+  // 用户点了支付链接后开始更频繁地轮询
+  let interval = 4000;
+  PAY_LINK.addEventListener('click', () => {
+    interval = 2500;
+    TXT.textContent = '收银台已在新窗口打开，完成支付后将自动跳转';
+  });
+
+  async function poll() {
+    ticks++;
+    try {
+      const r = await fetch(STATUS_URL, { credentials: 'same-origin' });
+      const data = await r.json();
+      if (data.status === 'paid') {
+        TXT.innerHTML = '<span style="color:var(--success)"><i class="bi bi-check-circle-fill"></i> 支付成功！正在跳转…</span>';
+        setTimeout(() => location.href = MEMBERSHIP_URL + '?paid=1', 800);
+        return;
+      }
+      if (data.status === 'failed' || data.status === 'expired') {
+        TXT.innerHTML = '<span style="color:var(--danger)">订单' + (data.status === 'failed' ? '失败' : '已过期') + '，<a href="{% url "accounts:pricing" %}">重新下单</a></span>';
+        return;
+      }
+    } catch (e) { /* 网络抖动，下轮再试 */ }
+    // 10 分钟后停轮询
+    if (ticks > 150) {
+      TXT.innerHTML = '已等待 10 分钟仍未到账，请<a href="{% url "accounts:membership" %}">手动查看会员</a>，或联系站长';
+      return;
+    }
+    setTimeout(poll, interval);
+  }
+  setTimeout(poll, interval);
+})();
+</script>
+{% endblock %}

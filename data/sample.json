@@ -1,0 +1,51 @@
+{
+  "_comment": "示例数据,用于本地测试 posts/management/commands/import_zsxq_json.py。结构与真实导出兼容,但内容为虚构。",
+  "meta": {
+    "source_group": "https://example.com/group/0000000000000",
+    "exported_at": "2026-01-01T00:00:00.000000",
+    "count": 3,
+    "since": "2026-01-01",
+    "mode": "sample"
+  },
+  "posts": [
+    {
+      "source_post_id": "sample-001",
+      "title": "示例帖一:今日盘面回顾",
+      "author": "示例作者",
+      "published_at": "2026-01-01T15:30:00+08:00",
+      "source_url": "",
+      "content_html": "<p>这是一篇示例帖子,用于本地测试导入流程。</p><p>沪指今日收涨 0.5%,创业板涨 1.2%,成交额 1.1 万亿。</p>",
+      "content_text": "这是一篇示例帖子,用于本地测试导入流程。\n沪指今日收涨 0.5%,创业板涨 1.2%,成交额 1.1 万亿。",
+      "summary": "示例:盘面回顾摘要",
+      "tags": ["盘面", "示例"],
+      "is_pinned": false,
+      "attachments": []
+    },
+    {
+      "source_post_id": "sample-002",
+      "title": "示例帖二:行业观点",
+      "author": "示例作者",
+      "published_at": "2026-01-02T10:00:00+08:00",
+      "source_url": "",
+      "content_html": "<p>这是第二篇示例,讨论虚构行业 A 的近期变化。</p>",
+      "content_text": "这是第二篇示例,讨论虚构行业 A 的近期变化。",
+      "summary": "示例:行业观点摘要",
+      "tags": ["行业"],
+      "is_pinned": false,
+      "attachments": []
+    },
+    {
+      "source_post_id": "sample-003",
+      "title": "示例帖三:置顶公告",
+      "author": "示例作者",
+      "published_at": "2026-01-03T08:00:00+08:00",
+      "source_url": "",
+      "content_html": "<p>这是一条置顶示例。</p>",
+      "content_text": "这是一条置顶示例。",
+      "summary": "示例:置顶公告摘要",
+      "tags": ["公告"],
+      "is_pinned": true,
+      "attachments": []
+    }
+  ]
+}

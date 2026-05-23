@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}注册 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card" style="max-width:440px">
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="display:inline-flex;align-items:center;justify-content:center;
+                  width:54px;height:54px;border-radius:14px;margin-bottom:.75rem;
+                  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);
+                  box-shadow:0 0 24px var(--accent-glow), inset 0 0 0 1px rgba(255,255,255,.2);
+                  color:#fff;font-size:1.4rem">
+        <i class="bi bi-person-plus"></i>
+      </div>
+      <h1 style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em;
+                 background:linear-gradient(135deg,#fff 0%,#c4b5fd 100%);
+                 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+        注册账号
+      </h1>
+    </div>
+
+    <div class="invite-note">
+      <i class="bi bi-shield-check"></i> 邮箱验证后可注册；填邀请码可立即获得会员天数
+    </div>
+
+    <form method="post" novalidate id="registerForm">
+      {% csrf_token %}
+
+      {# 用户名 #}
+      <div class="form-group">
+        <label class="form-label">{{ form.username.label }}</label>
+        <input type="text" name="{{ form.username.html_name }}"
+               class="form-input {% if form.username.errors %}is-error{% endif %}"
+               value="{{ form.username.value|default:'' }}" required>
+        {% for error in form.username.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      {# 邮箱 + 发送验证码 #}
+      <div class="form-group">
+        <label class="form-label">{{ form.email.label }}</label>
+        <div style="display:flex;gap:.5rem">
+          <input type="email" name="{{ form.email.html_name }}" id="emailInput"
+                 class="form-input {% if form.email.errors %}is-error{% endif %}"
+                 value="{{ form.email.value|default:'' }}"
+                 placeholder="用于接收验证码" required style="flex:1">
+          <button type="button" id="sendCodeBtn" class="btn"
+                  style="white-space:nowrap;padding:0 .9rem;font-size:.85rem;
+                         background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-1)">
+            发送验证码
+          </button>
+        </div>
+        {% for error in form.email.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+        <div id="codeMsg" class="form-help" style="display:none"></div>
+      </div>
+
+      {# 邮箱验证码 #}
+      <div class="form-group">
+        <label class="form-label">{{ form.email_code.label }}</label>
+        <input type="text" name="{{ form.email_code.html_name }}"
+               class="form-input {% if form.email_code.errors %}is-error{% endif %}"
+               value="{{ form.email_code.value|default:'' }}"
+               placeholder="6 位数字" autocomplete="off" required
+               inputmode="numeric" maxlength="6">
+        {% for error in form.email_code.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      {# 密码 #}
+      <div class="form-group">
+        <label class="form-label">{{ form.password1.label }}</label>
+        <input type="password" name="{{ form.password1.html_name }}"
+               class="form-input {% if form.password1.errors %}is-error{% endif %}"
+               minlength="6" required>
+        <div class="form-help">至少 6 位，无其他限制</div>
+        {% for error in form.password1.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label class="form-label">{{ form.password2.label }}</label>
+        <input type="password" name="{{ form.password2.html_name }}"
+               class="form-input {% if form.password2.errors %}is-error{% endif %}" required>
+        {% for error in form.password2.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      {# 邀请码（可选） #}
+      <div class="form-group">
+        <label class="form-label">{{ form.invite_code.label }}</label>
+        <input type="text" name="{{ form.invite_code.html_name }}"
+               class="form-input {% if form.invite_code.errors %}is-error{% endif %}"
+               value="{{ form.invite_code.value|default:'' }}"
+               placeholder="填了即送会员天数（可不填）">
+        {% for error in form.invite_code.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div style="margin-top:1.5rem">
+        <button type="submit" class="btn btn-primary btn-full">
+          <i class="bi bi-rocket-takeoff"></i> 注册账号
+        </button>
+      </div>
+    </form>
+
+    <hr class="form-divider">
+    <p class="form-footer">已有账号？<a href="{% url 'accounts:login' %}">去登录</a></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const SEND_URL = "{% url 'accounts:send_code' %}";
+  const CSRF = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const btn   = document.getElementById('sendCodeBtn');
+  const input = document.getElementById('emailInput');
+  const msg   = document.getElementById('codeMsg');
+
+  function setMsg(text, ok) {
+    msg.style.display = text ? 'block' : 'none';
+    msg.textContent   = text;
+    msg.style.color   = ok ? 'var(--success)' : 'var(--danger)';
+  }
+
+  function startCountdown(sec) {
+    btn.disabled = true;
+    let n = sec;
+    btn.textContent = n + 's 后重发';
+    const t = setInterval(() => {
+      n--;
+      if (n <= 0) {
+        clearInterval(t);
+        btn.disabled = false;
+        btn.textContent = '重新发送';
+      } else {
+        btn.textContent = n + 's 后重发';
+      }
+    }, 1000);
+  }
+
+  btn.addEventListener('click', async () => {
+    const email = input.value.trim();
+    if (!email || email.indexOf('@') < 0) {
+      setMsg('请先填写邮箱', false);
+      input.focus();
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = '发送中…';
+    setMsg('', true);
+    try {
+      const body = new URLSearchParams({ email: email });
+      const r = await fetch(SEND_URL, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body,
+        credentials: 'same-origin',
+      });
+      const data = await r.json();
+      if (data.ok) {
+        setMsg('验证码已发送，请查收邮件（含垃圾邮件箱）', true);
+        startCountdown(data.cooldown || 60);
+      } else {
+        setMsg(data.err || '发送失败，请稍后重试', false);
+        btn.disabled = false;
+        btn.textContent = '发送验证码';
+      }
+    } catch (e) {
+      setMsg('网络错误，请稍后重试', false);
+      btn.disabled = false;
+      btn.textContent = '发送验证码';
+    }
+  });
+})();
+</script>
+{% endblock %}

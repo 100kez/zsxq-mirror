@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}开通会员 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div style="max-width:1100px;margin:0 auto">
+
+  <!-- Hero -->
+  <div style="text-align:center;padding:1rem 0 2.25rem">
+    <div style="display:inline-flex;align-items:center;gap:.45rem;padding:5px 12px;border-radius:999px;background:var(--accent-soft);border:1px solid rgba(129,140,248,.32);font-size:.75rem;color:var(--accent-text);letter-spacing:.05em;margin-bottom:1rem">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent-glow)"></span>
+      MEMBERSHIP · 会员通行证
+    </div>
+    <h1 style="font-size:2.4rem;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#fff 0%,#c4b5fd 60%,#818cf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+      解锁全部研报内容
+    </h1>
+    <p style="color:var(--text-2);font-size:1rem;max-width:560px;margin:0 auto">
+      每日同步知识星球的研究笔记、券商研报与盘面解析，附件可下载，AI 帮你提炼要点。
+    </p>
+  </div>
+
+  <!-- Plans -->
+  <div class="bento-grid" style="margin-bottom:2rem">
+    {% for p in plans %}
+      {% if p.key == 'monthly' %}
+        <form method="post" action="{% url 'accounts:pay_create' %}"
+              class="glass-card glass-card--accent plan-card bento-6">
+          {% csrf_token %}
+          <input type="hidden" name="plan" value="{{ p.key }}">
+          <span class="plan-tag">推荐</span>
+          <div class="plan-name">{{ p.title }}</div>
+          <div class="plan-price">
+            ¥{{ p.amount }}
+            <span class="plan-unit">/ {{ p.days }} 天</span>
+          </div>
+          <div class="plan-meta">折合每日约 ¥2.9，约比日卡省 67%</div>
+          <div class="pay-method-row">
+            <button type="submit" name="method" value="wechat" class="btn btn-primary btn-full">
+              <i class="bi bi-wechat"></i> 微信支付
+            </button>
+            <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
+              <i class="bi bi-alipay"></i> 支付宝
+            </button>
+          </div>
+        </form>
+      {% else %}
+        <form method="post" action="{% url 'accounts:pay_create' %}"
+              class="glass-card plan-card bento-6">
+          {% csrf_token %}
+          <input type="hidden" name="plan" value="{{ p.key }}">
+          <div class="plan-name">{{ p.title }}</div>
+          <div class="plan-price">
+            ¥{{ p.amount }}
+            <span class="plan-unit">/ {{ p.days }} 天</span>
+          </div>
+          <div class="plan-meta">先尝鲜，满意再升月卡</div>
+          <div class="pay-method-row">
+            <button type="submit" name="method" value="wechat" class="btn btn-outline btn-full">
+              <i class="bi bi-wechat"></i> 微信支付
+            </button>
+            <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
+              <i class="bi bi-alipay"></i> 支付宝
+            </button>
+          </div>
+        </form>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Value tiles -->
+  <div class="bento-grid" style="margin-bottom:2rem">
+    <div class="glass-card value-tile bento-3">
+      <span class="value-icon"><i class="bi bi-broadcast"></i></span>
+      <h3>每日自动同步</h3>
+      <p>知识星球内容每日定时入库，不漏掉一条研报与盘面笔记。</p>
+    </div>
+    <div class="glass-card value-tile bento-3">
+      <span class="value-icon"><i class="bi bi-search"></i></span>
+      <h3>全文搜索</h3>
+      <p>关键词、行业、个股、机构来源都能秒级检索，不用翻聊天记录。</p>
+    </div>
+    <div class="glass-card value-tile bento-3">
+      <span class="value-icon"><i class="bi bi-cloud-download"></i></span>
+      <h3>附件高清下载</h3>
+      <p>PDF 研报、调研纪要、电话会议录音原始文件随时取，图片保留原图清晰度。</p>
+    </div>
+    <div class="glass-card value-tile bento-3">
+      <span class="value-icon"><i class="bi bi-stars"></i></span>
+      <h3>AI 要点提炼</h3>
+      <p>长文一键拆解为投资逻辑、关注个股、风险点，节省 80% 阅读时间。</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="glass-card" style="padding:1.5rem 1.75rem;margin-bottom:2rem">
+    <h2 style="font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:1rem;letter-spacing:-.01em">
+      常见问题
+    </h2>
+    <details class="faq-item">
+      <summary>会员到期后我的数据还在吗？</summary>
+      <p>所有访问记录、收藏、AI 问答对话都保留在账号下，到期后只是失去访问权，续费即恢复。</p>
+    </details>
+    <details class="faq-item">
+      <summary>续费规则是怎样的？</summary>
+      <p>续费天数会叠加在当前到期日之后，不会浪费已有时长。例如距到期还剩 5 天再买月卡，新到期日 = 当前到期日 + 30 天。</p>
+    </details>
+    <details class="faq-item">
+      <summary>支付完成多久能开通？</summary>
+      <p>正常 30 秒内到账，由支付通道异步回调触发。如 5 分钟仍未到账请联系站长，订单可在「我的会员」页面查询。</p>
+    </details>
+    <details class="faq-item">
+      <summary>支持哪些支付方式？</summary>
+      <p>微信、支付宝（通过聚合支付渠道）。下单后跳转到收银台扫码支付即可。</p>
+    </details>
+  </div>
+
+  <p style="text-align:center;font-size:.85rem;color:var(--text-3);margin-bottom:2rem">
+    已购买？<a href="{% url 'accounts:membership' %}" style="color:var(--accent)">查看我的会员</a>
+    &nbsp;·&nbsp;
+    <a href="{% url 'posts:list' %}" style="color:var(--accent)"><i class="bi bi-arrow-left"></i> 返回首页</a>
+  </p>
+
+</div>
+{% endblock %}

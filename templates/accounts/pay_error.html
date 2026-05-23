@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}下单失败 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card" style="max-width:480px;text-align:center">
+    <div style="display:inline-flex;align-items:center;justify-content:center;
+                width:64px;height:64px;border-radius:50%;margin-bottom:1rem;
+                background:linear-gradient(135deg,#fb7185 0%,#ef4444 100%);
+                box-shadow:0 0 32px rgba(248,113,113,.45), inset 0 0 0 2px rgba(255,255,255,.18);
+                color:#fff;font-size:1.7rem">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <h1 style="font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:.5rem">下单失败</h1>
+    <p style="color:var(--text-2);font-size:.92rem;margin:.5rem 0 1.75rem;line-height:1.7">
+      {{ msg }}
+    </p>
+    <a href="{% url 'accounts:pricing' %}" class="btn btn-primary btn-full">
+      <i class="bi bi-arrow-counterclockwise"></i> 返回套餐
+    </a>
+  </div>
+</div>
+{% endblock %}

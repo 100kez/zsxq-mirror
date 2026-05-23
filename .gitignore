@@ -1,0 +1,58 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.Python
+build/
+dist/
+.eggs/
+.venv/
+venv/
+env/
+
+# ── Django ──
+*.sqlite3
+*.sqlite3-journal
+staticfiles/
+media/
+local_settings.py
+
+# ── 敏感配置(绝不提交) ──
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+syncer/auth/
+*.cookie
+*.cookie.txt
+
+# ── 同步数据(知识星球内容,版权属于原作者) ──
+data/*.json
+!data/sample.json
+
+# ── 操作系统 / 编辑器 ──
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── 日志 ──
+*.log
+logs/
+
+# ── 临时 / 备份 ──
+*.bak
+*.backup
+*.orig
+tmp/
+API文档*.html
+*.html.bak
+
+# ── Claude Code 本地设置 ──
+.claude/

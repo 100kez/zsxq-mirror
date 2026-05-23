@@ -1,0 +1,5 @@
+django>=6.0
+requests>=2.31
+playwright>=1.40
+gunicorn>=21.2
+Pillow>=10.0

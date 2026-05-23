@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}帖子列表 — 小菜鸡仓库{% endblock %}
+
+{% block content %}
+<div class="layout-2col">
+
+  <!-- 帖子列表 -->
+  <div>
+    <div class="page-header">
+      <h1>
+        {% if selected_tag %}
+          <i class="bi bi-tag-fill" style="color:var(--accent)"></i> {{ selected_tag.name }}
+        {% else %}
+          全部帖子
+        {% endif %}
+      </h1>
+      <span class="count">共 {{ page_obj.paginator.count }} 篇</span>
+    </div>
+
+    <div class="card-list">
+      {% if page_obj.object_list %}
+        {% for post in page_obj %}
+          <a class="post-card{% if post.is_pinned %} post-card--pinned{% endif %}" href="{{ post.get_absolute_url }}">
+            <div class="post-card-header">
+              <div class="post-card-title">
+                {% if post.is_pinned %}<span class="post-pin-chip"><i class="bi bi-pin-angle-fill"></i> 置顶</span>{% endif %}
+                {{ post.title }}
+              </div>
+            </div>
+            {% if post.summary %}
+              <p class="post-card-summary">{{ post.summary }}</p>
+            {% endif %}
+
+            {% if post.image_atts %}
+              <div class="post-card-images">
+                {% for att in post.image_atts %}
+                  <img class="post-card-thumb"
+                       src="{% if att.file_path %}{{ att.file_path.url }}{% else %}{{ att.file_url }}{% endif %}"
+                       alt="" loading="lazy">
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if post.file_atts %}
+              <div class="post-card-files">
+                {% for att in post.file_atts %}
+                  <span class="post-card-file">
+                    <i class="bi bi-{% if att.file_type == 'document' %}file-earmark-text{% elif att.file_type == 'video' %}camera-video{% elif att.file_type == 'archive' %}file-earmark-zip{% else %}file-earmark{% endif %}"></i>
+                    {{ att.filename|truncatechars:40 }}
+                  </span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="post-card-meta">
+              {% if post.author %}
+                <span><i class="bi bi-person"></i> {{ post.author }}</span>
+              {% endif %}
+              <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"Y-m-d" }}</span>
+              {% for tag in post.tags.all %}
+                <span class="badge-tag">{{ tag.name }}</span>
+              {% endfor %}
+              {% if post.source_url %}
+                <span class="badge-source"><i class="bi bi-box-arrow-up-right"></i> 原帖</span>
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="icon"><i class="bi bi-inbox"></i></div>
+          <p>暂无帖子{% if selected_tag %}（标签：{{ selected_tag.name }}）{% endif %}</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if has_access %}
+      {% if page_obj.has_other_pages %}
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}{% if selected_tag %}&tag={{ selected_tag.slug }}{% endif %}">← 上一页</a></li>
+          {% endif %}
+          <li><span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+          {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}{% if selected_tag %}&tag={{ selected_tag.slug }}{% endif %}">下一页 →</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    {% else %}
+      {% if page_obj.paginator.num_pages > 1 %}
+        <div class="paywall-cta">
+          <div class="paywall-cta-icon"><i class="bi bi-lock-fill"></i></div>
+          <div class="paywall-cta-title">还有 {{ page_obj.paginator.num_pages|add:"-1" }} 页精彩内容</div>
+          <p class="paywall-cta-desc">
+            {% if user.is_authenticated %}
+              开通会员即可查看全部 {{ page_obj.paginator.count }} 篇帖子、详情和附件
+            {% else %}
+              注册后开通会员，查看全部 {{ page_obj.paginator.count }} 篇帖子、详情和附件
+            {% endif %}
+          </p>
+          <div class="paywall-cta-actions">
+            {% if user.is_authenticated %}
+              <a class="btn btn-primary" href="{% url 'accounts:pricing' %}"><i class="bi bi-stars"></i> 立即开通会员</a>
+              <a class="btn" href="{% url 'accounts:membership' %}" style="background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-1)">兑换邀请码</a>
+            {% else %}
+              <a class="btn btn-primary" href="{% url 'accounts:register' %}"><i class="bi bi-person-plus"></i> 免费注册</a>
+              <a class="btn" href="{% url 'accounts:login' %}" style="background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-1)">已有账号，登录</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="sidebar-sticky">
+      <div class="sidebar-card">
+        <div class="sidebar-card-header">搜索</div>
+        <div class="sidebar-card-body">
+          <form class="search-form" action="{% url 'posts:search' %}">
+            <input type="text" name="q" class="search-input" placeholder="关键词...">
+            <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+          </form>
+        </div>
+      </div>
+
+      {% if tags %}
+        <div class="sidebar-card">
+          <div class="sidebar-card-header">标签</div>
+          <div class="sidebar-card-body">
+            <div class="tag-filter">
+              <a href="{% url 'posts:list' %}"
+                 class="tag-filter-item {% if not selected_tag %}active{% endif %}">全部</a>
+              {% for tag in tags %}
+                <a href="?tag={{ tag.slug }}"
+                   class="tag-filter-item {% if selected_tag.slug == tag.slug %}active{% endif %}">
+                  {{ tag.name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </aside>
+
+</div>
+{% endblock %}
