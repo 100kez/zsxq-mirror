@@ -26,10 +26,10 @@
                        box-shadow:0 0 14px rgba(52,211,153,.5)">
             <i class="bi bi-check-lg"></i>
           </span>
-          <span style="font-weight:600;font-size:1rem;color:#fff">会员有效</span>
+          <span style="font-weight:600;font-size:1rem;color:var(--brand)">会员有效</span>
         </div>
         <div style="color:var(--text-2);font-size:.88rem;line-height:1.8">
-          <div>到期时间：<strong style="color:#fff">{{ membership.expires_at|date:"Y年m月d日 H:i" }}</strong></div>
+          <div>到期时间：<strong style="color:var(--brand)">{{ membership.expires_at|date:"Y年m月d日 H:i" }}</strong></div>
           <div>剩余天数：<strong style="color:var(--accent-2)">{{ membership.days_remaining }} 天</strong></div>
         </div>
       </div>
@@ -38,7 +38,7 @@
                   background:var(--surface-2);border:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
           <span style="font-size:1.3rem">🔒</span>
-          <span style="font-weight:600;font-size:1rem;color:#fff">未开通 / 已过期</span>
+          <span style="font-weight:600;font-size:1rem;color:var(--brand)">未开通 / 已过期</span>
         </div>
         <div style="color:var(--text-3);font-size:.88rem">购买会员或兑换邀请码即可解锁全部内容。</div>
       </div>

@@ -1322,7 +1322,7 @@ a:hover { color: var(--accent-2); }
   font-size: 2.6rem;
   font-weight: 700;
   letter-spacing: -.03em;
-  color: #fff;
+  color: var(--brand);
   display: flex;
   align-items: baseline;
   gap: .35rem;
@@ -1371,7 +1371,7 @@ a:hover { color: var(--accent-2); }
 .value-tile h3 {
   font-size: .95rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--brand);
 }
 .value-tile p {
   font-size: .82rem;
@@ -1387,7 +1387,7 @@ a:hover { color: var(--accent-2); }
 .faq-item summary {
   cursor: pointer;
   font-weight: 500;
-  color: #fff;
+  color: var(--brand);
   font-size: .92rem;
   list-style: none;
   display: flex; align-items: center; justify-content: space-between;
