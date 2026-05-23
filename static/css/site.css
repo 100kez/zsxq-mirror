@@ -2,47 +2,8 @@
    小菜鸡仓库 — site.css
    ═══════════════════════════════════════════════ */
 
-/* ── Design tokens: deep glass theme (default) ── */
+/* ── Design tokens: light theme (default) ── */
 :root {
-  --brand:          #ffffff;
-  --accent:         #818cf8;
-  --accent-2:       #c4b5fd;
-  --accent-text:    #c7d2fe;
-  --accent-soft:    rgba(129,140,248,.16);
-  --accent-glow:    rgba(129,140,248,.35);
-  --text-1:         #e6e8ee;
-  --text-2:         #9aa3b2;
-  --text-3:         #6b7384;
-  --border:         rgba(255,255,255,.08);
-  --border-strong:  rgba(255,255,255,.16);
-  --bg:             #0a0e1f;
-  --surface:        rgba(255,255,255,.04);
-  --surface-2:      rgba(255,255,255,.06);
-  --surface-strong: rgba(255,255,255,.09);
-  --danger:         #f87171;
-  --danger-soft:    rgba(239,68,68,.12);
-  --success:        #34d399;
-  --success-soft:   rgba(16,185,129,.12);
-  --warn:           #fbbf24;
-  --warn-soft:      rgba(245,158,11,.15);
-  --r-sm:           8px;
-  --r-md:           12px;
-  --r-lg:           18px;
-  --shadow-sm:      0 1px 2px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
-  --shadow-md:      0 8px 32px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.06);
-  --shadow-glow:    0 0 40px rgba(129,140,248,.28);
-  --blur:           saturate(180%) blur(22px);
-  --body-bg:
-    radial-gradient(1200px 700px at 85% -10%, rgba(99,102,241,.28), transparent 55%),
-    radial-gradient(1000px 600px at -10% 100%, rgba(168,85,247,.22), transparent 60%),
-    radial-gradient(800px 500px at 50% 50%, rgba(56,189,248,.06), transparent 70%),
-    linear-gradient(180deg, #07091a 0%, #0a0f25 45%, #0a0e1f 100%);
-  --nav-bg:         rgba(7, 9, 26, .55);
-  --gradient-title: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
-}
-
-/* ── Design tokens: light theme ── */
-:root[data-theme="light"] {
   --brand:          #111827;
   --accent:         #5b5bf6;
   --accent-2:       #4f46e5;
@@ -64,6 +25,9 @@
   --success-soft:   rgba(5,150,105,.08);
   --warn:           #d97706;
   --warn-soft:      rgba(217,119,6,.12);
+  --r-sm:           8px;
+  --r-md:           12px;
+  --r-lg:           18px;
   --shadow-sm:      0 1px 2px rgba(15,23,42,.06);
   --shadow-md:      0 4px 16px rgba(15,23,42,.08);
   --shadow-glow:    0 0 24px rgba(99,102,241,.18);
@@ -75,6 +39,43 @@
   --nav-bg:         rgba(255, 255, 255, .82);
   --nav-dropdown-bg:rgba(255, 255, 255, .96);
   --gradient-title: linear-gradient(135deg, #111827 0%, #5b5bf6 100%);
+}
+
+/* ── Design tokens: deep glass theme (opt-in via data-theme="dark") ── */
+:root[data-theme="dark"] {
+  --brand:          #ffffff;
+  --accent:         #818cf8;
+  --accent-2:       #c4b5fd;
+  --accent-text:    #c7d2fe;
+  --accent-soft:    rgba(129,140,248,.16);
+  --accent-glow:    rgba(129,140,248,.35);
+  --text-1:         #e6e8ee;
+  --text-2:         #9aa3b2;
+  --text-3:         #6b7384;
+  --border:         rgba(255,255,255,.08);
+  --border-strong:  rgba(255,255,255,.16);
+  --bg:             #0a0e1f;
+  --surface:        rgba(255,255,255,.04);
+  --surface-2:      rgba(255,255,255,.06);
+  --surface-strong: rgba(255,255,255,.09);
+  --danger:         #f87171;
+  --danger-soft:    rgba(239,68,68,.12);
+  --success:        #34d399;
+  --success-soft:   rgba(16,185,129,.12);
+  --warn:           #fbbf24;
+  --warn-soft:      rgba(245,158,11,.15);
+  --shadow-sm:      0 1px 2px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
+  --shadow-md:      0 8px 32px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.06);
+  --shadow-glow:    0 0 40px rgba(129,140,248,.28);
+  --blur:           saturate(180%) blur(22px);
+  --body-bg:
+    radial-gradient(1200px 700px at 85% -10%, rgba(99,102,241,.28), transparent 55%),
+    radial-gradient(1000px 600px at -10% 100%, rgba(168,85,247,.22), transparent 60%),
+    radial-gradient(800px 500px at 50% 50%, rgba(56,189,248,.06), transparent 70%),
+    linear-gradient(180deg, #07091a 0%, #0a0f25 45%, #0a0e1f 100%);
+  --nav-bg:         rgba(7, 9, 26, .55);
+  --nav-dropdown-bg:rgba(7, 9, 26, .92);
+  --gradient-title: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
 }
 
 /* ── Reset & base ── */
@@ -198,11 +199,10 @@ a:hover { color: var(--accent-2); }
   transition: background .15s, color .15s, transform .15s;
 }
 .theme-toggle:hover { background: var(--surface-2); color: var(--accent); transform: rotate(15deg); }
-.theme-toggle .theme-icon-light { display: none; }
-.theme-toggle .theme-icon-dark  { display: inline-block; }
-[data-theme="light"] .theme-toggle .theme-icon-light { display: inline-block; }
-[data-theme="light"] .theme-toggle .theme-icon-dark  { display: none; }
-[data-theme="light"] .theme-toggle .theme-icon-light { color: #f59e0b; }
+.theme-toggle .theme-icon-light { display: inline-block; color: #f59e0b; }
+.theme-toggle .theme-icon-dark  { display: none; }
+[data-theme="dark"] .theme-toggle .theme-icon-light { display: none; }
+[data-theme="dark"] .theme-toggle .theme-icon-dark  { display: inline-block; color: var(--text-1); }
 
 @media (max-width: 640px) {
   .nav-toggle { display: block; }

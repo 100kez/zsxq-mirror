@@ -5,14 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    // FOUC 保护:在 CSS 加载前就把主题写到 <html data-theme="...">
+    // FOUC 保护:浅色为默认,仅当用户手动切换到深色时才需要写 data-theme
     (function () {
       try {
-        var saved = localStorage.getItem('theme');
-        var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-        var theme = saved || (prefersLight ? 'light' : 'dark');
-        document.documentElement.setAttribute('data-theme', theme);
-      } catch (e) { /* localStorage 不可用就走默认深色 */ }
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) { /* localStorage 不可用就走默认浅色 */ }
     })();
   </script>
   <title>{% block title %}小菜鸡仓库{% endblock %}</title>
@@ -89,9 +88,13 @@
     var btn = document.getElementById('themeToggle');
     if (!btn) return;
     btn.addEventListener('click', function () {
-      var cur = document.documentElement.getAttribute('data-theme') || 'dark';
-      var next = cur === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      var next = cur === 'light' ? 'dark' : 'light';
+      if (next === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
       try { localStorage.setItem('theme', next); } catch (e) {}
     });
   })();
