@@ -2,7 +2,7 @@
    小菜鸡仓库 — site.css
    ═══════════════════════════════════════════════ */
 
-/* ── Design tokens: deep glass theme ── */
+/* ── Design tokens: deep glass theme (default) ── */
 :root {
   --brand:          #ffffff;
   --accent:         #818cf8;
@@ -32,6 +32,49 @@
   --shadow-md:      0 8px 32px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.06);
   --shadow-glow:    0 0 40px rgba(129,140,248,.28);
   --blur:           saturate(180%) blur(22px);
+  --body-bg:
+    radial-gradient(1200px 700px at 85% -10%, rgba(99,102,241,.28), transparent 55%),
+    radial-gradient(1000px 600px at -10% 100%, rgba(168,85,247,.22), transparent 60%),
+    radial-gradient(800px 500px at 50% 50%, rgba(56,189,248,.06), transparent 70%),
+    linear-gradient(180deg, #07091a 0%, #0a0f25 45%, #0a0e1f 100%);
+  --nav-bg:         rgba(7, 9, 26, .55);
+  --gradient-title: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+}
+
+/* ── Design tokens: light theme ── */
+:root[data-theme="light"] {
+  --brand:          #111827;
+  --accent:         #5b5bf6;
+  --accent-2:       #4f46e5;
+  --accent-text:    #4338ca;
+  --accent-soft:    rgba(99,102,241,.10);
+  --accent-glow:    rgba(99,102,241,.22);
+  --text-1:         #111827;
+  --text-2:         #4b5563;
+  --text-3:         #6b7280;
+  --border:         rgba(15,23,42,.08);
+  --border-strong:  rgba(15,23,42,.16);
+  --bg:             #f6f8fb;
+  --surface:        #ffffff;
+  --surface-2:      #f1f3f8;
+  --surface-strong: #e7eaf2;
+  --danger:         #dc2626;
+  --danger-soft:    rgba(220,38,38,.08);
+  --success:        #059669;
+  --success-soft:   rgba(5,150,105,.08);
+  --warn:           #d97706;
+  --warn-soft:      rgba(217,119,6,.12);
+  --shadow-sm:      0 1px 2px rgba(15,23,42,.06);
+  --shadow-md:      0 4px 16px rgba(15,23,42,.08);
+  --shadow-glow:    0 0 24px rgba(99,102,241,.18);
+  --blur:           saturate(140%) blur(10px);
+  --body-bg:
+    radial-gradient(1100px 600px at 90% -10%, rgba(99,102,241,.10), transparent 55%),
+    radial-gradient(900px 500px at -10% 110%, rgba(168,85,247,.07), transparent 60%),
+    linear-gradient(180deg, #fbfcfe 0%, #f6f8fb 100%);
+  --nav-bg:         rgba(255, 255, 255, .82);
+  --nav-dropdown-bg:rgba(255, 255, 255, .96);
+  --gradient-title: linear-gradient(135deg, #111827 0%, #5b5bf6 100%);
 }
 
 /* ── Reset & base ── */
@@ -43,14 +86,11 @@ body {
   font-size: 15px;
   line-height: 1.65;
   color: var(--text-1);
-  background:
-    radial-gradient(1200px 700px at 85% -10%, rgba(99,102,241,.28), transparent 55%),
-    radial-gradient(1000px 600px at -10% 100%, rgba(168,85,247,.22), transparent 60%),
-    radial-gradient(800px 500px at 50% 50%, rgba(56,189,248,.06), transparent 70%),
-    linear-gradient(180deg, #07091a 0%, #0a0f25 45%, #0a0e1f 100%);
+  background: var(--body-bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  transition: background-color .25s, color .25s;
 }
 
 ::selection { background: rgba(129,140,248,.4); color: #fff; }
@@ -60,7 +100,7 @@ a:hover { color: var(--accent-2); }
 
 /* ── Navbar (glass) ── */
 .site-nav {
-  background: rgba(7, 9, 26, .55);
+  background: var(--nav-bg);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
   border-bottom: 1px solid var(--border);
@@ -88,7 +128,7 @@ a:hover { color: var(--accent-2); }
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+  background: var(--gradient-title);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -135,13 +175,34 @@ a:hover { color: var(--accent-2); }
 .nav-links a:hover,
 .nav-links button:hover {
   background: var(--surface-2);
-  color: #fff;
+  color: var(--brand);
 }
 .nav-username {
   font-size: .875rem;
   color: var(--text-3);
   padding: 6px 10px;
 }
+
+/* 主题切换按钮 */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: background .15s, color .15s, transform .15s;
+}
+.theme-toggle:hover { background: var(--surface-2); color: var(--accent); transform: rotate(15deg); }
+.theme-toggle .theme-icon-light { display: none; }
+.theme-toggle .theme-icon-dark  { display: inline-block; }
+[data-theme="light"] .theme-toggle .theme-icon-light { display: inline-block; }
+[data-theme="light"] .theme-toggle .theme-icon-dark  { display: none; }
+[data-theme="light"] .theme-toggle .theme-icon-light { color: #f59e0b; }
 
 @media (max-width: 640px) {
   .nav-toggle { display: block; }
@@ -150,7 +211,7 @@ a:hover { color: var(--accent-2); }
     position: absolute;
     top: 56px;
     left: 0; right: 0;
-    background: rgba(7, 9, 26, .92);
+    background: var(--nav-dropdown-bg, rgba(7, 9, 26, .92));
     backdrop-filter: var(--blur);
     -webkit-backdrop-filter: var(--blur);
     border-bottom: 1px solid var(--border);
@@ -269,7 +330,7 @@ a:hover { color: var(--accent-2); }
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
 }
-.btn-outline:hover { background: var(--surface-strong); color: #fff; border-color: rgba(255,255,255,.28); }
+.btn-outline:hover { background: var(--surface-strong); color: var(--brand); border-color: var(--border-strong); }
 .btn-sm { padding: 5px 10px; font-size: .8rem; }
 .btn-full { width: 100%; justify-content: center; padding: 10px; font-size: .95rem; }
 
@@ -472,7 +533,7 @@ a:hover { color: var(--accent-2); }
   border: 1px solid rgba(129,140,248,.3);
   transition: background .15s;
 }
-.badge-tag:hover { background: rgba(129,140,248,.28); color: #fff; }
+.badge-tag:hover { background: rgba(129,140,248,.28); color: var(--brand); }
 
 .badge-attach {
   display: inline-flex;
@@ -525,7 +586,7 @@ a:hover { color: var(--accent-2); }
   -webkit-backdrop-filter: var(--blur);
   transition: all .15s;
 }
-.pagination a:hover { background: var(--accent-soft); border-color: rgba(129,140,248,.4); color: #fff; }
+.pagination a:hover { background: var(--accent-soft); border-color: rgba(129,140,248,.4); color: var(--brand); }
 .pagination .current {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   border-color: transparent; color: #fff;
@@ -738,7 +799,7 @@ a:hover { color: var(--accent-2); }
   padding: .5rem .75rem;
   text-align: left;
 }
-.detail-body th { background: var(--surface-2); font-weight: 600; color: #fff; }
+.detail-body th { background: var(--surface-2); font-weight: 600; color: var(--brand); }
 
 /* ── Attachments ── */
 .attachments-card {
@@ -1225,7 +1286,7 @@ a:hover { color: var(--accent-2); }
   color: #fff;
   font-feature-settings: "tnum";
   letter-spacing: -.02em;
-  background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+  background: var(--gradient-title);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
