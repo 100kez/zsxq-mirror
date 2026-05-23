@@ -1,4 +1,4 @@
-# quant-vault · 小菜鸡仓库
+# zsxq-mirror · 小菜鸡仓库
 
 > 一个把"星球内容 + 站内 AI 总结 + 会员体系 + 在线支付"打通的 Django 内容站。
 > 线上演示：**[bddog.cn](https://bddog.cn)** —— 量化投资笔记 + 盘后 AI 总结，每日更新。
@@ -40,8 +40,8 @@
 ## 📦 本地起步
 
 ```bash
-git clone https://github.com/100kez/quant-vault.git
-cd quant-vault
+git clone https://github.com/100kez/zsxq-mirror.git
+cd zsxq-mirror
 
 # 1. 装依赖
 pip install -r requirements.txt
