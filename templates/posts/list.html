@@ -18,6 +18,26 @@
     </div>
 
     <div class="card-list">
+      {% if page_obj.number == 1 and not selected_tag %}
+        <a class="post-card post-card--vip" href="{% url 'accounts:pricing' %}#vip">
+          <div class="post-card-header">
+            <div class="post-card-title">
+              <span class="post-pin-chip post-pin-chip--gold"><i class="bi bi-crown-fill"></i> 内部群</span>
+              加入「888 内部交流群」— 老师领读 · 盘中实时提醒
+            </div>
+          </div>
+          <p class="post-card-summary">
+            专业老师每日转发当天最有价值的研报，附对应标的的投资逻辑与盘面思路；盘中重要消息面第一时间在群内提醒，避免信息滞后。
+          </p>
+          <div class="post-card-meta">
+            <span><i class="bi bi-file-earmark-text"></i> 精选研报</span>
+            <span><i class="bi bi-bullseye"></i> 标的逻辑</span>
+            <span><i class="bi bi-graph-up-arrow"></i> 盘面思路</span>
+            <span><i class="bi bi-broadcast"></i> 盘中消息</span>
+            <span class="badge-source"><i class="bi bi-arrow-right-circle"></i> 查看详情</span>
+          </div>
+        </a>
+      {% endif %}
       {% if page_obj.object_list %}
         {% for post in page_obj %}
           <a class="post-card{% if post.is_pinned %} post-card--pinned{% endif %}" href="{{ post.get_absolute_url }}">

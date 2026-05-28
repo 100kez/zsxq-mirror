@@ -45,9 +45,25 @@
     {% endif %}
 
     <!-- 付费续期入口 -->
-    <a href="{% url 'accounts:pricing' %}" class="btn btn-primary btn-full" style="margin-bottom:1.5rem">
+    <a href="{% url 'accounts:pricing' %}" class="btn btn-primary btn-full" style="margin-bottom:1rem">
       <i class="bi bi-lightning-charge-fill"></i> 开通 / 续费会员
     </a>
+
+    <!-- 888 内部群推广 -->
+    <div class="glass-card glass-card--gold" style="padding:1.1rem 1.25rem;margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem">
+        <span class="plan-tag plan-tag--gold" style="position:static">内部群</span>
+        <span style="font-weight:600;color:var(--text-1);font-size:.95rem">888 / 月 · 老师领读</span>
+      </div>
+      <ul style="margin:.4rem 0 .85rem;padding-left:1.15rem;color:var(--text-2);font-size:.85rem;line-height:1.75">
+        <li>专业老师每日转发当天最有价值的研报</li>
+        <li>对应标的的投资逻辑与盘面思路一并讲清</li>
+        <li>盘中突发消息面第一时间群内提醒</li>
+      </ul>
+      <a href="{% url 'accounts:pricing' %}#vip" class="btn btn-gold btn-full">
+        <i class="bi bi-crown-fill"></i> 查看内部群详情
+      </a>
+    </div>
 
     <!-- 兑换邀请码 -->
     <h2 style="font-size:.85rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem">

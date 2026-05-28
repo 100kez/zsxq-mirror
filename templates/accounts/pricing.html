@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}开通会员 — 小菜鸡仓库{% endblock %}
 
 {% block content %}
@@ -16,54 +17,117 @@
     <p style="color:var(--text-2);font-size:1rem;max-width:560px;margin:0 auto">
       每日同步知识星球的研究笔记、券商研报与盘面解析，附件可下载，AI 帮你提炼要点。
     </p>
+    <div style="display:inline-flex;align-items:center;gap:.45rem;margin-top:1rem;padding:5px 12px;border-radius:999px;background:var(--accent-soft);border:1px solid rgba(129,140,248,.32);font-size:.78rem;color:var(--accent-text)">
+      <i class="bi bi-mortarboard"></i> 浙大邮箱（@zju.edu.cn）注册即送 1 个月会员
+    </div>
   </div>
 
   <!-- Plans -->
-  <div class="bento-grid" style="margin-bottom:2rem">
-    {% for p in plans %}
-      {% if p.key == 'monthly' %}
-        <form method="post" action="{% url 'accounts:pay_create' %}"
-              class="glass-card glass-card--accent plan-card bento-6">
-          {% csrf_token %}
-          <input type="hidden" name="plan" value="{{ p.key }}">
-          <span class="plan-tag">推荐</span>
-          <div class="plan-name">{{ p.title }}</div>
-          <div class="plan-price">
-            ¥{{ p.amount }}
-            <span class="plan-unit">/ {{ p.days }} 天</span>
-          </div>
-          <div class="plan-meta">折合每日约 ¥2.9，约比日卡省 67%</div>
-          <div class="pay-method-row">
-            <button type="submit" name="method" value="wechat" class="btn btn-primary btn-full">
-              <i class="bi bi-wechat"></i> 微信支付
-            </button>
-            <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
-              <i class="bi bi-alipay"></i> 支付宝
-            </button>
-          </div>
-        </form>
-      {% else %}
-        <form method="post" action="{% url 'accounts:pay_create' %}"
-              class="glass-card plan-card bento-6">
-          {% csrf_token %}
-          <input type="hidden" name="plan" value="{{ p.key }}">
-          <div class="plan-name">{{ p.title }}</div>
-          <div class="plan-price">
-            ¥{{ p.amount }}
-            <span class="plan-unit">/ {{ p.days }} 天</span>
-          </div>
-          <div class="plan-meta">先尝鲜，满意再升月卡</div>
-          <div class="pay-method-row">
-            <button type="submit" name="method" value="wechat" class="btn btn-outline btn-full">
-              <i class="bi bi-wechat"></i> 微信支付
-            </button>
-            <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
-              <i class="bi bi-alipay"></i> 支付宝
-            </button>
-          </div>
-        </form>
-      {% endif %}
-    {% endfor %}
+  <div class="pricing-grid" style="margin-bottom:2rem">
+
+    <!-- 日卡 -->
+    {% for p in plans %}{% if p.key == 'daily' %}
+    <form method="post" action="{% url 'accounts:pay_create' %}" class="glass-card plan-card">
+      {% csrf_token %}
+      <input type="hidden" name="plan" value="{{ p.key }}">
+      <div class="plan-name">{{ p.title }}</div>
+      <div class="plan-price">
+        ¥{{ p.amount }}
+        <span class="plan-unit">/ {{ p.days }} 天</span>
+      </div>
+      <div class="plan-meta">先尝鲜，满意再升月卡</div>
+      <div class="pay-method-row">
+        <button type="submit" name="method" value="wechat" class="btn btn-outline btn-full">
+          <i class="bi bi-wechat"></i> 微信支付
+        </button>
+        <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
+          <i class="bi bi-alipay"></i> 支付宝
+        </button>
+      </div>
+    </form>
+    {% endif %}{% endfor %}
+
+    <!-- 月卡（推荐） -->
+    {% for p in plans %}{% if p.key == 'monthly' %}
+    <form method="post" action="{% url 'accounts:pay_create' %}" class="glass-card glass-card--accent plan-card">
+      {% csrf_token %}
+      <input type="hidden" name="plan" value="{{ p.key }}">
+      <span class="plan-tag">推荐</span>
+      <div class="plan-name">{{ p.title }}</div>
+      <div class="plan-price">
+        ¥{{ p.amount }}
+        <span class="plan-unit">/ {{ p.days }} 天</span>
+      </div>
+      <div class="plan-meta">折合每日约 ¥9.6，约比日卡省 49%</div>
+      <div class="pay-method-row">
+        <button type="submit" name="method" value="wechat" class="btn btn-primary btn-full">
+          <i class="bi bi-wechat"></i> 微信支付
+        </button>
+        <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
+          <i class="bi bi-alipay"></i> 支付宝
+        </button>
+      </div>
+    </form>
+    {% endif %}{% endfor %}
+
+    <!-- 内部群 VIP -->
+    {% for p in plans %}{% if p.key == 'vip' %}
+    <form method="post" action="{% url 'accounts:pay_create' %}" class="glass-card glass-card--gold plan-card">
+      {% csrf_token %}
+      <input type="hidden" name="plan" value="{{ p.key }}">
+      <span class="plan-tag plan-tag--gold">内部群</span>
+      <div class="plan-name">{{ p.title }}</div>
+      <div class="plan-price">
+        ¥{{ p.amount }}
+        <span class="plan-unit">/ {{ p.days }} 天</span>
+      </div>
+      <div class="plan-meta">含会员权限 + 内部交流群（付费后拉群）</div>
+      <div class="pay-method-row">
+        <button type="submit" name="method" value="wechat" class="btn btn-gold btn-full">
+          <i class="bi bi-wechat"></i> 微信支付
+        </button>
+        <button type="submit" name="method" value="alipay" class="btn btn-outline btn-full">
+          <i class="bi bi-alipay"></i> 支付宝
+        </button>
+      </div>
+    </form>
+    {% endif %}{% endfor %}
+
+  </div>
+
+  <!-- 内部群亮点 -->
+  <div id="vip" class="glass-card glass-card--gold" style="padding:1.75rem 1.85rem;margin-bottom:2rem">
+    <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:.35rem">
+      <span class="plan-tag plan-tag--gold" style="position:static">内部群</span>
+      <h2 style="font-size:1.15rem;font-weight:700;color:var(--text-1);margin:0;letter-spacing:-.01em">
+        888 / 月 · 老师领读，盘中实时提醒
+      </h2>
+    </div>
+    <p style="color:var(--text-2);font-size:.92rem;margin:.4rem 0 1.1rem;line-height:1.6">
+      在站点全部会员权限之上，再多一个跟着专业老师走的实时频道：
+    </p>
+    <div class="bento-grid" style="margin-bottom:.25rem">
+      <div class="glass-card value-tile bento-3" style="background:rgba(245,158,11,.06)">
+        <span class="value-icon"><i class="bi bi-file-earmark-text" style="color:#f59e0b"></i></span>
+        <h3>精选研报转发</h3>
+        <p>老师每天筛选当日最有价值的券商研报与机构观点，直接转发到群内，省下你刷信息流的时间。</p>
+      </div>
+      <div class="glass-card value-tile bento-3" style="background:rgba(245,158,11,.06)">
+        <span class="value-icon"><i class="bi bi-bullseye" style="color:#f59e0b"></i></span>
+        <h3>对应标的逻辑</h3>
+        <p>每条研报背后的投资逻辑、关注个股、关键催化剂一并讲清，不只是丢一张截图。</p>
+      </div>
+      <div class="glass-card value-tile bento-3" style="background:rgba(245,158,11,.06)">
+        <span class="value-icon"><i class="bi bi-graph-up-arrow" style="color:#f59e0b"></i></span>
+        <h3>盘面思路解读</h3>
+        <p>开盘前后给出当日盘面节奏、热点轮动判断，帮你建立交易计划而不是临时拍脑袋。</p>
+      </div>
+      <div class="glass-card value-tile bento-3" style="background:rgba(245,158,11,.06)">
+        <span class="value-icon"><i class="bi bi-broadcast" style="color:#f59e0b"></i></span>
+        <h3>盘中消息提醒</h3>
+        <p>突发政策、行业大事、个股异动第一时间群内提醒，比新闻 App 推送早一步。</p>
+      </div>
+    </div>
   </div>
 
   <!-- Value tiles -->
@@ -110,6 +174,10 @@
     <details class="faq-item">
       <summary>支持哪些支付方式？</summary>
       <p>微信、支付宝（通过聚合支付渠道）。下单后跳转到收银台扫码支付即可。</p>
+    </details>
+    <details class="faq-item">
+      <summary>内部群是什么？</summary>
+      <p>888 套餐除了包含全部会员权限，还会在付费成功后邀请你进入专属内部交流群。群内由专业老师每日转发当天最有价值的研报，附对应标的的投资逻辑与盘面思路；盘中重要消息面第一时间在群内提醒，避免信息滞后。</p>
     </details>
   </div>
 

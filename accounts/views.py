@@ -17,6 +17,8 @@ from .models import EmailVerifyCode, Membership
 logger = logging.getLogger(__name__)
 
 TRIAL_MINUTES = 10  # 新注册用户(未用邀请码)的免费试用时长
+ZJU_EMAIL_DOMAIN = '@zju.edu.cn'
+ZJU_PERK_DAYS = 30  # 浙大邮箱注册赠送天数
 
 
 class CustomLoginView(LoginView):
@@ -74,16 +76,33 @@ def register(request):
             user = form.save()
             mem = getattr(user, 'membership', None)
             used_invite = mem is not None  # form.save() 用了邀请码会顺手建 membership
-            if not used_invite:
-                # 未使用邀请码:发 TRIAL_MINUTES 分钟免费试用
+
+            granted_zju = False
+            if user.email and user.email.lower().endswith(ZJU_EMAIL_DOMAIN):
+                if mem is None:
+                    mem = Membership.objects.create(
+                        user=user,
+                        expires_at=timezone.now(),
+                        note=f'浙大邮箱注册赠送 {ZJU_PERK_DAYS} 天',
+                    )
+                mem.add_days(ZJU_PERK_DAYS)
+                granted_zju = True
+
+            if mem is None:
+                # 既无邀请码也非浙大邮箱:发 TRIAL_MINUTES 分钟免费试用
                 mem = Membership.objects.create(
                     user=user,
                     expires_at=timezone.now() + timedelta(minutes=TRIAL_MINUTES),
                     note=f'新注册 {TRIAL_MINUTES} 分钟试用',
                 )
             login(request, user)
-            if used_invite:
-                exp = mem.expires_at.strftime('%Y-%m-%d')
+
+            exp = mem.expires_at.strftime('%Y-%m-%d')
+            if granted_zju and used_invite:
+                messages.success(request, f'注册成功！邀请码 + 浙大邮箱赠送 {ZJU_PERK_DAYS} 天已叠加，会员有效期至 {exp}。')
+            elif granted_zju:
+                messages.success(request, f'注册成功！浙大邮箱赠送 {ZJU_PERK_DAYS} 天会员，有效期至 {exp}。')
+            elif used_invite:
                 messages.success(request, f'注册成功！会员有效期至 {exp}。')
             else:
                 messages.success(
